@@ -31,7 +31,6 @@ class _RoutesState extends State<Routes> {
         );
         break;
       case 1:
-        // Stay on Routes screen
         break;
       case 2:
         Navigator.pushReplacement(
@@ -51,27 +50,41 @@ class _RoutesState extends State<Routes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFB2DAEF),
       appBar: AppBar(
-        title: Text('Available Routes'),
-        backgroundColor: Colors.lightBlue[300],
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              'AVAILABLE ROUTES',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
+          ],
         ),
       ),
       body: Column(
         children: [
-          SizedBox(height: 12),
-          // Vehicle Type Buttons
+          const SizedBox(height: 12),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               children:
                   vehicleTypes.map((type) {
                     final isSelected = type == selectedType;
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
@@ -80,8 +93,13 @@ class _RoutesState extends State<Routes> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              isSelected ? Colors.blueAccent : Colors.grey[300],
-                          foregroundColor: Colors.black,
+                              isSelected ? Colors.blueAccent : Colors.white,
+                          foregroundColor:
+                              isSelected ? Colors.white : Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
                         ),
                         child: Text(type),
                       ),
@@ -89,27 +107,67 @@ class _RoutesState extends State<Routes> {
                   }).toList(),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
               itemCount: routesData[selectedType]?.length ?? 0,
               itemBuilder: (context, index) {
                 final route = routesData[selectedType]![index];
-                return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListTile(
-                    leading: Icon(Icons.directions),
-                    title: Text('From: ${route['from']} → To: ${route['to']}'),
-                    subtitle: Text('Status: ${route['status']}'),
-                    trailing: Icon(
-                      route['status'] == 'Running'
-                          ? Icons.check_circle
-                          : Icons.access_time,
-                      color:
-                          route['status'] == 'Running'
-                              ? Colors.green
-                              : Colors.orange,
-                    ),
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'From: ${route['from']} → To: ${route['to']}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(Icons.directions_bus, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Status: ${route['status']}',
+                            style: TextStyle(
+                              color:
+                                  route['status'] == 'Running'
+                                      ? Colors.green
+                                      : Colors.orange,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            route['status'] == 'Running'
+                                ? Icons.check_circle
+                                : Icons.access_time,
+                            color:
+                                route['status'] == 'Running'
+                                    ? Colors.green
+                                    : Colors.orange,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 );
               },
