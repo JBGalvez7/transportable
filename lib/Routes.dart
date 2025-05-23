@@ -3,6 +3,7 @@ import 'MainScreen.dart';
 import 'routes_data.dart';
 import 'HelpCenter.dart';
 import 'ProfileScreen.dart';
+import 'Bookings.dart';
 
 class Routes extends StatefulWidget {
   const Routes({Key? key}) : super(key: key);
@@ -39,7 +40,10 @@ class _RoutesState extends State<Routes> {
         );
         break;
       case 3:
-        Navigator.pushReplacementNamed(context, '/booking');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Booking()),
+        );
         break;
     }
   }

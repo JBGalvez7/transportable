@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Routes.dart';
 import 'HelpCenter.dart';
+import 'Login.dart';
 import 'Bookings.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -36,12 +37,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
         break;
       case 3:
-        /*Navigator.pushReplacement(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Booking()),
-        );*/
+        );
         break;
     }
+  }
+
+  void _showLogoutConfirmation() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Confirm Logout'),
+            content: const Text('Are you sure you want to log out?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(), // dismiss dialog
+                child: const Text('No'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // dismiss dialog first
+                  // Then navigate to Login screen and clear stack
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Login()),
+                    (route) => false,
+                  );
+                },
+                child: const Text('Yes'),
+              ),
+            ],
+          ),
+    );
   }
 
   @override
@@ -163,7 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: _showLogoutConfirmation,
                       icon: const Icon(Icons.logout),
                       label: const Text('Logout'),
                       style: ElevatedButton.styleFrom(

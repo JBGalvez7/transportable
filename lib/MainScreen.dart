@@ -4,6 +4,7 @@ import 'package:transportable/ProfileScreen.dart';
 import 'Routes.dart';
 import 'ProfileScreen.dart';
 import 'package:transportable/Login.dart';
+import 'Bookings.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -73,8 +74,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     ProfileScreen(),
     Routes(),
-    Center(child: Text('Help Center')),
-    Center(child: Text('Booking')),
+    HelpCenter(),
+    Booking(),
   ];
 
   void _onItemTapped(int index) {
@@ -98,14 +99,14 @@ class _MainScreenState extends State<MainScreen> {
           MaterialPageRoute(builder: (context) => HelpCenter()),
         );
         break;
-      /*case 3:
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BookingScreen()),
-      );
-      break;
-    default:
-      break;*/
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Booking()),
+        );
+        break;
+      default:
+        break;
     }
   }
 

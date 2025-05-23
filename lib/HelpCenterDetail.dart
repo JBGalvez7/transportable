@@ -5,8 +5,15 @@ import 'dart:math';
 
 class HelpCenterDetail extends StatefulWidget {
   final String vehicleType;
+  final String vehicleID;
+  final int initialTabIndex; // ADD THIS
 
-  const HelpCenterDetail({super.key, required this.vehicleType});
+  const HelpCenterDetail({
+    super.key,
+    required this.vehicleType,
+    this.vehicleID = "",
+    this.initialTabIndex = 0, // DEFAULT TO NOTIFICATION TAB
+  });
 
   @override
   State<HelpCenterDetail> createState() => _HelpCenterDetailState();
@@ -21,7 +28,11 @@ class _HelpCenterDetailState extends State<HelpCenterDetail>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialTabIndex,
+    );
     _initializeDummyData();
   }
 
@@ -30,7 +41,7 @@ class _HelpCenterDetailState extends State<HelpCenterDetail>
     final rand = Random();
     String letterPart =
         List.generate(3, (_) => letters[rand.nextInt(letters.length)]).join();
-    String numberPart = (1000 + rand.nextInt(9000)).toString(); // 1000 to 9999
+    String numberPart = (1000 + rand.nextInt(9000)).toString();
     return '$letterPart-$numberPart';
   }
 
@@ -55,6 +66,11 @@ class _HelpCenterDetailState extends State<HelpCenterDetail>
           'departing from Stop',
         );
         _dummyMessages = [
+          if (widget.vehicleID.isNotEmpty)
+            {
+              "sender": "user",
+              "text": "Regarding vehicle ID: ${widget.vehicleID}",
+            },
           {"sender": "user", "text": "I lost my bag in the E-Jeepney earlier."},
           {
             "sender": "system",
@@ -71,6 +87,11 @@ class _HelpCenterDetailState extends State<HelpCenterDetail>
           'heading to Terminal',
         );
         _dummyMessages = [
+          if (widget.vehicleID.isNotEmpty)
+            {
+              "sender": "user",
+              "text": "Regarding vehicle ID: ${widget.vehicleID}",
+            },
           {"sender": "user", "text": "The driver was very kind and helpful."},
           {"sender": "system", "text": "Thank you for your feedback!"},
         ];
@@ -83,6 +104,11 @@ class _HelpCenterDetailState extends State<HelpCenterDetail>
           'going out from Terminal',
         );
         _dummyMessages = [
+          if (widget.vehicleID.isNotEmpty)
+            {
+              "sender": "user",
+              "text": "Regarding vehicle ID: ${widget.vehicleID}",
+            },
           {
             "sender": "user",
             "text": "Good Afternoon, I forgot my wallet on the bus awhile ago.",

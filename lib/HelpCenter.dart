@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'HelpCenterDetail.dart';
+import 'Bookings.dart';
 import 'Routes.dart';
 import 'ProfileScreen.dart';
 
@@ -185,7 +186,10 @@ class HelpCenter extends StatelessWidget {
           case 2:
             break;
           case 3:
-            Navigator.pushReplacementNamed(context, '/booking');
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Booking()),
+            );
             break;
         }
       },
