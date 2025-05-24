@@ -1,13 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/material/input_decorator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'Login.dart';
 
-class Signup extends StatelessWidget {
+class Signup extends StatefulWidget {
   const Signup({Key? key}) : super(key: key);
 
-  // Define consistent padding and border radius values
+  @override
+  _SignupState createState() => _SignupState();
+}
+
+class _SignupState extends State<Signup> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
   final double borderRadius = 25.0;
   final double paddingValue = 20.0;
+
+  Future<void> _signup() async {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      _showDialog('Passwords do not match');
+      return;
+    }
+
+    final response = await http.post(
+      Uri.parse('http://192.168.1.8:9000/signup'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': _emailController.text,
+        'username': _usernameController.text,
+        'password': _passwordController.text,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      final token = data['access_token'];
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+    } else {
+      String message;
+      try {
+        message = jsonDecode(response.body)['detail'] ?? 'Signup failed';
+      } catch (_) {
+        message = 'Signup failed';
+      }
+      _showDialog(message);
+    }
+  }
+
+  void _showDialog(String message) {
+    showDialog(
+      context: context,
+      builder:
+          (_) =>
+              AlertDialog(title: const Text('Error'), content: Text(message)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,27 +75,12 @@ class Signup extends StatelessWidget {
             width: double.infinity,
             image: AssetImage('assets/background.png'),
           ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.black,
-                  Colors.black.withAlpha((0.8 * 255).round()),
-                  Colors.black.withAlpha((0.15 * 255).round()),
-                  Colors.black.withAlpha((0.5 * 255).round()),
-                ],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
-            ),
-          ),
           Align(
             alignment: Alignment.center,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'SignUp',
                   style: TextStyle(
                     color: Colors.white,
@@ -48,20 +88,16 @@ class Signup extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                // Consistent padding for TextFields
                 Padding(
                   padding: EdgeInsets.all(paddingValue),
                   child: TextField(
+                    controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email Address',
                       fillColor: Color(0xffD8D8DD),
                       filled: true,
-                      enabledBorder: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(borderRadius),
-                        borderSide: BorderSide(
-                          color: const Color.fromARGB(0, 10, 43, 70),
-                          width: 2.0,
-                        ),
                       ),
                     ),
                   ),
@@ -69,16 +105,13 @@ class Signup extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(paddingValue),
                   child: TextField(
+                    controller: _usernameController,
                     decoration: InputDecoration(
                       labelText: 'Username',
                       fillColor: Color(0xffD8D8DD),
                       filled: true,
-                      enabledBorder: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(borderRadius),
-                        borderSide: BorderSide(
-                          color: const Color.fromARGB(0, 10, 43, 70),
-                          width: 2.0,
-                        ),
                       ),
                     ),
                   ),
@@ -86,17 +119,14 @@ class Signup extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(paddingValue),
                   child: TextField(
+                    controller: _passwordController,
+                    obscureText: true,
                     decoration: InputDecoration(
-                      label: Text('Password'),
-                      suffixIcon: Icon(Icons.visibility_off),
+                      labelText: 'Password',
                       fillColor: Color(0xffD8D8DD),
                       filled: true,
-                      enabledBorder: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(borderRadius),
-                        borderSide: BorderSide(
-                          color: const Color.fromARGB(0, 10, 43, 70),
-                          width: 2.0,
-                        ),
                       ),
                     ),
                   ),
@@ -104,99 +134,53 @@ class Signup extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(paddingValue),
                   child: TextField(
+                    controller: _confirmPasswordController,
+                    obscureText: true,
                     decoration: InputDecoration(
-                      label: Text('Confirm Password'),
-                      suffixIcon: Icon(Icons.visibility_off),
+                      labelText: 'Confirm Password',
                       fillColor: Color(0xffD8D8DD),
                       filled: true,
-                      enabledBorder: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(borderRadius),
-                        borderSide: BorderSide(
-                          color: const Color.fromARGB(0, 10, 43, 70),
-                          width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: _signup,
+                  child: Container(
+                    height: 50,
+                    width: 350,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF1D166D),
+                      borderRadius: BorderRadius.circular(borderRadius),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 19, top: 8, right: 19),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 5),
-                      Text(
-                        'Password must be at least 8 to 12 characters (the longer,\nthe better) and a mix of uppercase letters, lowercase\nletters, numbers, and special characters (e.g., !, @, etc.).',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Spacer(),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                Container(
-                  height: 50,
-                  width: 350,
-                  decoration: BoxDecoration(
-                    color: Color(0xFF1D166D),
-                    borderRadius: BorderRadius.circular(borderRadius),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Login',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                const SizedBox(height: 20),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Login()),
+                    );
+                  },
+                  child: const Text(
+                    'Already have an account?',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                ),
-                SizedBox(height: 15),
-                Padding(
-                  padding: EdgeInsets.only(left: 15.0, right: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Login(),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'Already have an account?',
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Sign up now.',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
                   ),
                 ),
               ],

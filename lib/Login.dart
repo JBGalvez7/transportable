@@ -1,16 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:animated_switch/animated_switch.dart';
-import 'package:flutter/src/material/input_decorator.dart';
-import 'package:transportable/MainScreen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'MainScreen.dart';
 import 'Signup.dart';
-import 'Home.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
-  // Define consistent padding and border radius values
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   final double borderRadius = 25.0;
   final double paddingValue = 20.0;
+
+  Future<void> _login() async {
+    final response = await http.post(
+      Uri.parse('http://192.168.1.8:9000/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': _emailController.text,
+        'password': _passwordController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final token = data['access_token'];
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+      );
+    } else {
+      String message;
+      try {
+        message = jsonDecode(response.body)['detail'] ?? 'Login failed';
+      } catch (_) {
+        message = 'Login failed';
+      }
+
+      showDialog(
+        context: context,
+        builder:
+            (_) => AlertDialog(
+              title: const Text('Login Failed'),
+              content: Text(message),
+            ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,22 +66,12 @@ class Login extends StatelessWidget {
             width: double.infinity,
             image: AssetImage('assets/background.png'),
           ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
-            ),
-          ),
           Align(
             alignment: Alignment.center,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Login',
                   style: TextStyle(
                     color: Colors.white,
@@ -46,20 +79,16 @@ class Login extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                // Consistent padding for TextFields
                 Padding(
                   padding: EdgeInsets.all(paddingValue),
                   child: TextField(
+                    controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email Address',
                       fillColor: Color(0xffD8D8DD),
                       filled: true,
-                      enabledBorder: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(borderRadius),
-                        borderSide: BorderSide(
-                          color: const Color.fromARGB(0, 10, 43, 70),
-                          width: 2.0,
-                        ),
                       ),
                     ),
                   ),
@@ -67,46 +96,22 @@ class Login extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(paddingValue),
                   child: TextField(
+                    controller: _passwordController,
+                    obscureText: true,
                     decoration: InputDecoration(
-                      label: Text('Password'),
+                      labelText: 'Password',
                       suffixIcon: Icon(Icons.visibility_off),
                       fillColor: Color(0xffD8D8DD),
                       filled: true,
-                      enabledBorder: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(borderRadius),
-                        borderSide: BorderSide(
-                          color: const Color.fromARGB(0, 10, 43, 70),
-                          width: 2.0,
-                        ),
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 19, top: 8, right: 19),
-                  child: Row(
-                    children: [
-                      AnimatedSwitch(colorOff: Color(0xffA09F99)),
-                      SizedBox(width: 5),
-                      Text('Remember me', style: TextStyle(color: Colors.grey)),
-                      Spacer(),
-                      Text(
-                        'Forgot Password',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MainScreen(),
-                      ),
-                    );
-                  },
+                  onTap: _login,
                   child: Container(
                     height: 50,
                     width: 350,
@@ -114,7 +119,7 @@ class Login extends StatelessWidget {
                       color: Color(0xFF1D166D),
                       borderRadius: BorderRadius.circular(borderRadius),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         'Login',
                         style: TextStyle(
@@ -125,83 +130,27 @@ class Login extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
-                Padding(
-                  padding: EdgeInsets.only(left: 18.0, right: 18),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '----------',
-                        style: TextStyle(color: Colors.white, fontSize: 30),
-                      ),
-                      Text(
-                        ' Or Login With ',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Text(
-                        '----------',
-                        style: TextStyle(color: Colors.white, fontSize: 30),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.only(left: 18.0, right: 18),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Social media login buttons with consistent styling
-                      _socialMediaButton(Icons.g_mobiledata),
-                      SizedBox(width: 20),
-                      _socialMediaButton(Icons.apple),
-                      SizedBox(width: 20),
-                      _socialMediaButton(Icons.facebook),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        // Navigate to the Signup screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Signup()),
-                        );
-                      },
-                      child: Text(
-                        'Sign up now.',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 243, 243, 245),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
+                const SizedBox(height: 20),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Signup()),
+                    );
+                  },
+                  child: const Text(
+                    'Sign up now.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  // Social media button for login
-  Widget _socialMediaButton(IconData icon) {
-    return Container(
-      height: 50,
-      width: 100,
-      decoration: BoxDecoration(
-        color: Color(0xff484848),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Icon(icon, color: Colors.white, size: 40),
     );
   }
 }

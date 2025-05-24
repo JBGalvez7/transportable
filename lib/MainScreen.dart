@@ -23,17 +23,17 @@ class _MainScreenState extends State<MainScreen> {
       'id': 'B123456789',
       'plate': 'XYZ 5678',
       'available': true,
-      'from': 'San Fernando',
-      'to': 'BAUANG',
+      'from': 'Laoag',
+      'to': 'Rosario',
     },
     "Bus 2": {
       'type': 'Bus',
-      'name': 'Maria L. Gomez',
+      'name': 'Pascual L. Gomez',
       'id': 'B987654321',
       'plate': 'LMN 1234',
       'available': false,
-      'from': 'CHOWKING',
-      'to': 'CSI Mall',
+      'from': 'Lingsat Terminal',
+      'to': 'Agoo',
     },
     "Jeep 1": {
       'type': 'Jeep',
@@ -41,17 +41,17 @@ class _MainScreenState extends State<MainScreen> {
       'id': 'J1122334455',
       'plate': 'JPX 3421',
       'available': true,
-      'from': 'San Juan',
-      'to': 'Lingsat',
+      'from': 'Bacnotan',
+      'to': 'Tanqui Terminal',
     },
     "Jeep 2": {
       'type': 'Jeep',
-      'name': 'Elena R. Santos',
+      'name': 'Elio R. Santos',
       'id': 'J9988776655',
       'plate': 'JEP 9087',
       'available': false,
-      'from': 'Catbangen',
-      'to': 'Biday',
+      'from': 'San Fernando Plaza',
+      'to': 'Bauang',
     },
     "Tricycle 1": {
       'type': 'Tricycle',
@@ -59,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
       'id': 'T14467890123',
       'plate': 'QPX 2485',
       'available': true,
-      'current': 'Burgos St.',
+      'current': 'San Fernando Plaza, Gen. Luna St.',
     },
     "Tricycle 2": {
       'type': 'Tricycle',
@@ -67,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
       'id': 'T18822333444',
       'plate': 'TRX 1123',
       'available': false,
-      'current': 'Rizal Ave.',
+      'current': 'P. De Tavera St.',
     },
   };
 
@@ -545,52 +545,52 @@ class _MainScreenState extends State<MainScreen> {
 
           Positioned(
             top: 120,
-            left: 80,
+            left: 150,
             child: GestureDetector(
               onTap: () => _showVehicleInfo("Bus 1"),
-              child: Icon(Icons.directions_bus, color: Colors.red, size: 32),
+              child: Image.asset('assets/bus_icon.png', scale: 40),
             ),
           ),
           Positioned(
-            top: 220,
-            left: 160,
+            top: 425,
+            left: 100,
             child: GestureDetector(
               onTap: () => _showVehicleInfo("Bus 2"),
-              child: Icon(Icons.directions_bus, color: Colors.red, size: 32),
+              child: Image.asset('assets/bus_icon.png', scale: 40),
             ),
           ),
 
           Positioned(
-            top: 180,
-            left: 250,
+            top: 65,
+            left: 160,
             child: GestureDetector(
               onTap: () => _showVehicleInfo("Jeep 1"),
-              child: Icon(Icons.local_shipping, color: Colors.pink, size: 32),
+              child: Image.asset('assets/jeep_icon.png', scale: 40),
             ),
           ),
           Positioned(
             top: 300,
-            left: 120,
+            left: 115,
             child: GestureDetector(
               onTap: () => _showVehicleInfo("Jeep 2"),
-              child: Icon(Icons.local_shipping, color: Colors.pink, size: 32),
+              child: Image.asset('assets/jeep_icon.png', scale: 40),
             ),
           ),
 
           Positioned(
-            top: 340,
-            left: 200,
+            top: 365,
+            left: 215,
             child: GestureDetector(
               onTap: () => _showVehicleInfo("Tricycle 1"),
-              child: Icon(Icons.pedal_bike, color: Colors.blue, size: 32),
+              child: Image.asset('assets/tricycle_icon.png', scale: 40),
             ),
           ),
           Positioned(
             top: 100,
-            left: 220,
+            left: 355,
             child: GestureDetector(
               onTap: () => _showVehicleInfo("Tricycle 2"),
-              child: Icon(Icons.pedal_bike, color: Colors.blue, size: 32),
+              child: Image.asset('assets/tricycle_icon.png', scale: 40),
             ),
           ),
 
@@ -636,3 +636,57 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+
+
+/*"Bus 1": {
+      'type': 'Bus',
+      'name': 'Carlos D. Reyes',
+      'id': 'B123456789',
+      'plate': 'XYZ 5678',
+      'available': true,
+      'from': 'Laoag',
+      'to': 'Rosario',
+    },
+    "Bus 2": {
+      'type': 'Bus',
+      'name': 'Pascual L. Gomez',
+      'id': 'B987654321',
+      'plate': 'LMN 1234',
+      'available': false,
+      'from': 'Lingsat Terminal',
+      'to': 'Agoo',
+    },
+    "Jeep 1": {
+      'type': 'Jeep',
+      'name': 'Julio P. Cruz',
+      'id': 'J1122334455',
+      'plate': 'JPX 3421',
+      'available': true,
+      'from': 'Bacnotan',
+      'to': 'Tanqui Terminal',
+    },
+    "Jeep 2": {
+      'type': 'Jeep',
+      'name': 'Elio R. Santos',
+      'id': 'J9988776655',
+      'plate': 'JEP 9087',
+      'available': false,
+      'from': 'San Fernando Plaza',
+      'to': 'Bauang',
+    },
+    "Tricycle 1": {
+      'type': 'Tricycle',
+      'name': 'Leandro P. Reyes',
+      'id': 'T14467890123',
+      'plate': 'QPX 2485',
+      'available': true,
+      'current': 'San Fernando Plaza, Gen. Luna St.',
+    },
+    "Tricycle 2": {
+      'type': 'Tricycle',
+      'name': 'Isabel G. Mendoza',
+      'id': 'T18822333444',
+      'plate': 'TRX 1123',
+      'available': false,
+      'current': 'P. De Tavera St.',
+    },*/
